@@ -1,0 +1,43 @@
+.form {
+    display: block;
+    padding: 1.5em 1em;
+    margin: 1em auto;
+}
+
+.form-label {
+    display: block;
+    font-size: 1.075em;
+    margin: 0 0 .5em .25em;
+    font-weight: 300;
+}
+
+.form-input {
+    color: $dark-grey;
+    background: $light-grey;
+
+    border: 0;
+    border-radius: 3px;
+    font-size: 1em;
+    padding: 0.75em 1.25em; 
+    font-weight: 200;
+
+    margin: { bottom: 1em; }
+
+    -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+
+    &::placeholder {
+        color: $dark-grey;
+    }
+}
+
+.form-input--submit {
+    color: $white;
+    background: $green;
+}
+
+.form-input--block {
+    display: block;
+    width: 100%;
+}
