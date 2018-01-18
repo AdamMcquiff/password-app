@@ -35,4 +35,9 @@ gulp.task('watch', () => {
     livereload.listen()
     gulp.watch('./src/sass/**/*.scss', ['sass'])
     gulp.watch('./src/js/**/*.js', ['js'])
+    gulp.watch('**/*.html', () => {
+        gulp.src('**/*.html')
+            .pipe(browserSync.stream())
+            .pipe(livereload())
+    })
 })

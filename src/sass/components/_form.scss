@@ -1,20 +1,30 @@
 .form {
     display: block;
-    padding: 1.5em 1em;
-    margin: 1em auto;
-}
+    padding: 0.75em 1.5em;
 
+    background: $white;
+    border-radius: $radius;
+    width: 425px;
+    margin: 1em auto;
+
+    -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+    -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+}
+ 
 .form-label {
+    float: left;
     display: block;
     font-size: 1.075em;
-    margin: 0 0 .5em .25em;
+    margin: 0 0 .5em .25em; 
     font-weight: 300;
 }
 
 .form-input {
     color: $dark-grey;
     background: $light-grey;
-
+    transition: .2s ease background;
+ 
     border: 0;
     border-radius: 3px;
     font-size: 1em;
@@ -26,18 +36,37 @@
     -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
     -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
-
+ 
     &::placeholder {
         color: $dark-grey;
     }
+
+    &:hover,
+    &:active,
+    &:focus {
+        background: darken($light-grey, 5%);
+    }
 }
 
-.form-input--submit {
+.form-input--submit {   
+    cursor: pointer;
     color: $white;
     background: $green;
+    transition: .2s ease background;
+
+    &:hover,
+    &:active,
+    &:focus {
+        background: darken($green, 5%);
+    }
 }
 
 .form-input--block {
     display: block;
     width: 100%;
+}
+
+.form-forgotten-password {
+    font-weight: 200;
+    float: right;
 }

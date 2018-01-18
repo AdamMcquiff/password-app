@@ -2,3 +2,19 @@
     box-sizing: border-box;
     font-family: 'Exo 2', sans-serif;
 }
+
+a {
+    color: $blue;
+    font-weight: 200;
+    transition: .2s ease color;
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: darken($blue, 25%);
+    }
+
+    &:focus { 
+
+    }
+}
