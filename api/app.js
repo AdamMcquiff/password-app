@@ -27,7 +27,6 @@ app.use(passport.session())
 app.use(flash())
 
 require('./server/routes')(app)
-
 const user = require('./server/models').User
 
 require('./server/authentication/passport.js')(passport, user)

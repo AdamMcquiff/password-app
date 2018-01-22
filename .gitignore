@@ -1,2 +1,10 @@
+.idea/
+
+# Dist folders
 node_modules
 build/
+
+# Don't commit setup-specific environment and config files 
+# that may contain passwords and other sensitive info
+.env
+api/server/config/config.json
