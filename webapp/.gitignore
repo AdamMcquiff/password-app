@@ -1,0 +1,18 @@
+.DS_Store
+node_modules/
+/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Don't commit setup-specific environment and config files 
+# that may contain passwords and other sensitive info
+.env

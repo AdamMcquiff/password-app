@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <title>Password Application</title>
-
-    <link href="https://fonts.googleapis.com/css?family=Exo+2:200,300,400,500" rel="stylesheet">
-    <link rel="stylesheet" href="./build/css/style.css" type="text/css">
-</head>
-
-<body>
-    <main class="signin">
+<template>
+   <main class="signin">
         <div class="aligncenter">
             <img src="" alt="" class="">
             <h1 class="signin-title">Sign into your account</h1>
@@ -46,8 +32,39 @@
             </p>
         </div>
     </main>
+</template>
 
-    <script src="./build/js/scripts.js"></script>
-</body>
+<script>
+export default {
+  name: 'HelloWorld',
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  }
+}
+</script>
 
-</html>
+<style scoped>
+.signin {
+    min-height: 100vh;
+    overflow: hidden;
+    
+    background: #F09819;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #EDDE5D, #F09819);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #EDDE5D, #F09819); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    padding-top: 8em;
+}
+
+.signin-title {
+    color: #FFF;
+    font-weight: 300;
+}
+
+.signin-form {
+    padding-top: 1.5em; 
+    padding-bottom: 1.5em;
+    margin-top: 2em;
+}
+</style>

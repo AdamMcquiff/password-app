@@ -1,9 +1,52 @@
+<template>
+    <div id="app">
+        <router-view />
+    </div>
+</template>
+
+<script>
+  export default {
+      name: "App"
+  };
+</script>
+
+<style>
+html,
+body {
+    margin: 0;
+}
+
+p {
+    font-weight: 300;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: "Avenir", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #61C4E2;
+    font-weight: 200;
+    transition: .2s ease color;
+}
+
+a:hover,
+a:active,
+a:focus {
+    color: darken(#61C4E2, 25%);
+}
+
+.aligncenter {
+    text-align: center;
+}
+
 .form {
     display: block;
     padding: 0.75em 1.5em;
 
-    background: $white;
-    border-radius: $radius;
+    background: #FFF;
+    border-radius: 3px;
     width: 425px;
     margin: 1em auto;
 
@@ -21,8 +64,8 @@
 }
 
 .form-input {
-    color: $dark-grey;
-    background: $light-grey;
+    color: #505050;
+    background: #E3E3E3;
     transition: .2s ease background;
  
     border: 0;
@@ -31,34 +74,34 @@
     padding: 0.75em 1.25em; 
     font-weight: 200;
 
-    margin: { bottom: 1em; }
+    margin-bottom: 1em;
 
     -webkit-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
     -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
- 
-    &::placeholder {
-        color: $dark-grey;
-    }
+}
 
-    &:hover,
-    &:active,
-    &:focus {
-        background: darken($light-grey, 5%);
-    }
+.form-input::placeholder {
+    color: #505050;
+}
+
+.form-input:hover,
+.form-input:active,
+.form-input:focus {
+    /* background: darken($light-grey, 5%); */
 }
 
 .form-input--submit {   
     cursor: pointer;
-    color: $white;
-    background: $green;
+    color: #FFF;
+    background: #28A745;
     transition: .2s ease background;
+}
 
-    &:hover,
-    &:active,
-    &:focus {
-        background: darken($green, 5%);
-    }
+form-input--submit:hover,
+form-input--submit:active,
+form-input--submit:focus {
+    /* background: darken($green, 5%); */
 }
 
 .form-input--block {
@@ -70,3 +113,5 @@
     font-weight: 200;
     float: right;
 }
+
+</style>
