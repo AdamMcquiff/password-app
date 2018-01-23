@@ -46,8 +46,12 @@
 
 				<label for="confirm-password" class="form-label">
 					Confirm Password
+					<span role="tooltip" class="error" v-if="confirmPassword.hint">
+						{{ confirmPassword.hint }}
+					</span>
 				</label>
-				<input type="password" name="confirm-password" placeholder="Confirm password..." class="form-input form-input--block">
+				<input type="password" name="confirm-password" placeholder="Confirm password..." class="form-input form-input--block"
+				       @input="validateConfirmPassword" v-bind:class="{ invalid: confirmPassword.isValid == false, valid: confirmPassword.isValid }">
 	
 				<input type="submit" value="Sign up" class="form-input form-input--block form-input--submit">
 			</form>
@@ -64,62 +68,85 @@
 		data: () => {
 			return {
 				name: {
+					value: "",
 					isValid: null,
 					hint: ""
 				},
 				email: {
+					value: "",
 					isValid: null,
 					hint: ""
 				},
 				password: {
+					value: "",			// Store password
 					isValid: null,		// Boolean to check if the password is valid
 					hints: [],			// Array of text hints to be presented to the user
 					progress: 0, 		// The progress made on addressing all password tips. Scale: 0-5
 					rating: "", 		// the text label rating of the password; e.g. "Very Good", "Poor", etc
 					commonality: 0 		// the amount of times the password appears in 'lists' across the web
+				},
+				confirmPassword: {
+					value: "",
+					isValid: null,
+					hint: ""
 				}
 			};
 		},
 		methods: {
-			signup: (event) => {
-				let name = event.target.elements.name.value;
-				let email = event.target.elements.email.value;
-				let password = event.target.elements.password.value;
-				let confirmPassword = event.target.elements.password.confirm - password;
-	
+			signup: function(event) {
 				if (
-					this.isEmailValid(email) &&
-					this.isPasswordValid(password) &&
-					password == confirmPassword
+					this.name.isValid &&
+					this.email.isValid &&
+					this.password.isValid &&
+					this.confirmPassword.isValid
 				) {
-					http
-						.post("signup", {
-							email: email,
-							password: password
+					http.post("signup", {
+							name: this.name.value,
+							email: this.email.value,
+							password: this.password.value
 						})
 						.then(response => {
-							//
+							// Store JWT Auth token in the local storage
+							localStorage.setItem("token", response.data.token);
+
+							// Redirect user to the security questions
+							router.push("signup/security-questions");
 						})
 						.catch(e => {
 							//
 						});
 				}
 			},
-			validateName: (e) => {
+			validateName: function(e) {
 				// Check if the name field is not empty
 				let name = e.target ? e.target.value : e;
 				this.name.isValid = !!name;
 				this.name.hint = this.name.isValid ? "" : "Please enter a name.";
+				this.name.value = name;
 			},
-			validateEmail: (e) => {
+			validateEmail: function(e) {
 				// Check if the email field is not empty and is in a valid 
 				// 'email' format via Regular Expression (regex)
 				let email = e.target ? e.target.value : e;
 				let regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 				this.email.isValid = regex.test(email);
 				this.email.hint = this.email.isValid ? "" : "Please enter a valid email address.";
+				this.email.value = email;
 			},
-			validatePassword: (e) => {
+			validateConfirmPassword: function(e) {
+				// Store password
+				let confirmPassword = e.target ? e.target.value : e;
+				
+				// Reset boolean and hint
+				this.confirmPassword.isValid = false;
+				this.confirmPassword.hint = "";
+
+				// Check if original password is valid; check paswords match
+				if (!this.password.isValid) this.confirmPassword.hint = "Please ensure orignal password is valid"
+				else if (confirmPassword != this.password.value) this.confirmPassword.hint = "Passwords do not match"
+				else this.confirmPassword.isValid = true
+			},
+			validatePassword: function(e) {
 				// Check if the password field is not empty and matches a multi-step validation process
 				let password = e.target ? e.target.value : e;
 
@@ -169,6 +196,9 @@
 
 						// Get the password rating text to display to the user.
 						this.password.rating = this.getPasswordRating(this.password.progress);
+
+						// Store password value
+						this.password.value = password;	
 					});
 			},
 			getPasswordRating: function(progress) {
