@@ -15,9 +15,9 @@
                 <label for="password" class="form-label">
                     Password
                 </label>
-                <a href="" class="form-forgotten-password">
+                <router-link to="/forgotten-password" class="form-forgotten-password">
                     Forgot password?
-                </a>
+                </router-link>
                 <input type="password" name="password" placeholder="Enter password" class="form-input form-input--block">
 
                 <input type="submit" value="Sign in" class="form-input form-input--block form-input--submit">
@@ -27,39 +27,37 @@
         <div class="form aligncenter">
             <p>
                 New user?
-                <a href="">
-                    Create an account
-                </a>
-                .
+                <router-link to="/signup">Create an account</router-link>.
             </p>
         </div>
     </main>
 </template>
 
 <script>
-import axios from "axios";
+import router from "../router";
+import { http } from "../common/http-common";
 
 export default {
   name: "Login",
-  data() {
-    return {
-      //
-    };
-  },
   methods: {
     login: function(event) {
       let email = event.target.elements.email.value;
       let password = event.target.elements.password.value;
 
       if (this.isEmailValid(email) && password) {
-        axios.post("http://localhost:8000/api/login", {
+        http.post("login", {
             email: email,
             password: password
-        }).then(response => {
-            console.log(response)
+          })
+          .then(response => {
+            // Store JWT Auth token in the local storage
+            localStorage.setItem("token", response.data.token);
+
+            // Redirect user to the dashboard
+            router.push("dashboard");
           })
           .catch(e => {
-            this.errors.push(e);
+            alert("Login unsucessful; your email or password is incorrect");
           });
       }
     },
@@ -76,16 +74,8 @@ export default {
   overflow: hidden;
 
   background: #f09819; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #edde5d,
-    #f09819
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #edde5d,
-    #f09819
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: -webkit-linear-gradient(to right, #edde5d, #f09819);
+  background: linear-gradient(to right, #edde5d, #f09819);
 
   padding-top: 8em;
 }

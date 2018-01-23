@@ -34,7 +34,7 @@ a {
 a:hover,
 a:active,
 a:focus {
-    color: darken(#61C4E2, 25%);
+    color: #2093b0;
 }
 
 .aligncenter {
@@ -88,7 +88,7 @@ a:focus {
 .form-input:hover,
 .form-input:active,
 .form-input:focus {
-    /* background: darken($light-grey, 5%); */
+    background: #bababa;
 }
 
 .form-input--submit {   
@@ -98,10 +98,10 @@ a:focus {
     transition: .2s ease background;
 }
 
-form-input--submit:hover,
-form-input--submit:active,
-form-input--submit:focus {
-    /* background: darken($green, 5%); */
+.form-input--submit:hover,
+.form-input--submit:active,
+.form-input--submit:focus {
+    background: #007717;
 }
 
 .form-input--block {
