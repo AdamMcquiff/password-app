@@ -63,6 +63,12 @@ a:focus {
     font-weight: 300;
 }
 
+.form-label .error {
+    color: #F44336;
+    margin-left: .5em;
+    font-weight: 500;
+}
+
 .form-input {
     color: #505050;
     background: #E3E3E3;
@@ -81,6 +87,14 @@ a:focus {
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
 }
 
+.form-input.invalid {
+    border: 2px solid #F44336;
+}
+
+.form-input.valid {
+    border: 2px solid #64DD17;
+}
+
 .form-input::placeholder {
     color: #505050;
 }
@@ -88,7 +102,7 @@ a:focus {
 .form-input:hover,
 .form-input:active,
 .form-input:focus {
-    background: #bababa;
+    background: #dddddd;
 }
 
 .form-input--submit {   

@@ -1,7 +1,6 @@
 <template>
    <main class="signin">
         <div class="aligncenter">
-            <img src="" alt="" class="">
             <h1 class="signin-title">Sign into your account</h1>
         </div>
 
@@ -45,7 +44,8 @@ export default {
       let password = event.target.elements.password.value;
 
       if (this.isEmailValid(email) && password) {
-        http.post("login", {
+        http
+          .post("login", {
             email: email,
             password: password
           })
