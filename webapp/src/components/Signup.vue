@@ -232,7 +232,7 @@
 
 <style scoped>
 	.signup {
-		min-height: 100vh;
+		min-height: 150vh;
 		overflow: hidden;
 		background: #2193b0;
 		background: -webkit-linear-gradient( to right, #6dd5ed, #2193b0);

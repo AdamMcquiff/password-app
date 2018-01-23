@@ -1,6 +1,8 @@
 <template>
     <div id="app">
-        <router-view />
+        <transition name="page" mode="out-in">
+            <router-view></router-view>
+        </transition>
     </div>
 </template>
 
@@ -11,6 +13,7 @@
 </script>
 
 <style>
+/* Normalise and general styles */
 html,
 body {
     margin: 0;
@@ -37,9 +40,13 @@ a:focus {
     color: #2093b0;
 }
 
+/* Utils */
+
 .aligncenter {
     text-align: center;
 }
+
+/* Forms */
 
 .form {
     display: block;
@@ -127,5 +134,15 @@ a:focus {
     font-weight: 200;
     float: right;
 }
+
+/* Transitions */
+.page-enter-active, .page-leave-active {
+  transition: opacity 1s, transform 1s;
+}
+.page-enter, .page-leave-to {
+  opacity: 0;
+  transform: translateY(-30%);
+}
+
 
 </style>

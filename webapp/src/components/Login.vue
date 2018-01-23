@@ -70,7 +70,7 @@ export default {
 
 <style scoped>
 .signin {
-  min-height: 100vh;
+  min-height: 150vh;
   overflow: hidden;
 
   background: #f09819; /* fallback for old browsers */
