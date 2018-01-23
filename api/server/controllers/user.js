@@ -3,7 +3,7 @@ const Users = require('../models').User
 module.exports = {
     retrieve(req, res) {
         return Users
-            .findById(req.id)
+            .findById(req.user.id)
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -19,10 +19,10 @@ module.exports = {
         return Users
             .update(getProperties(req), {
                 where: {
-                    id: req.id
+                    id: req.user.id
                 }
             })
-            .then(rider => res.status(201).send(rider))
+            .then(user => res.status(201).send(user))
             .catch(error => res.status(400).send(error))
     },
 }

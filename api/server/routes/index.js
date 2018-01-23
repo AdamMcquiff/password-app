@@ -30,4 +30,12 @@ module.exports = (app) => {
             })
         })
     })
+
+    app.group("/api", (router) => {
+        router.use(authenticate)
+
+        // User Profile
+        router.get('/profile', userController.retrieve)
+        router.post('/profile', userController.update)
+    })    
 }
