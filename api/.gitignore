@@ -1,2 +1,6 @@
+.DS_Store
+node_modules/
 
+# Don't commit setup-specific environment and config files 
+# that may contain passwords and other sensitive info
 server/config/config.json
