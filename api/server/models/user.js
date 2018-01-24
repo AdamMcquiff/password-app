@@ -12,6 +12,21 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
         },
+        alternativeEmail: {
+            type: DataTypes.STRING,
+        },
+        securityQuestionOne: {
+            type: DataTypes.STRING,
+        },
+        securityQuestionOneAnswer: {
+            type: DataTypes.STRING,
+        },
+        securityQuestionTwo: {
+            type: DataTypes.STRING,
+        },
+        securityQuestionTwoAnswer: {
+            type: DataTypes.STRING,
+        },
     });
 
     User.associate = (models) => {

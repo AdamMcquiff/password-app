@@ -1,8 +1,8 @@
-const Users = require('../models').User
+const User = require('../models').User
 
 module.exports = {
     retrieve(req, res) {
-        return Users
+        return User
             .findById(req.user.id)
             .then(user => {
                 if (!user) {
@@ -16,8 +16,15 @@ module.exports = {
     },
 
     update(req, res) {
-        return Users
-            .update(getProperties(req), {
+        return User
+            .update({
+                name: req.body.name,
+                alternativeEmail: req.body.alternativeEmail,
+                securityQuestionOne: req.body.securityQuestionOne,
+                securityQuestionOneAnswer: req.body.securityQuestionOneAnswer,
+                securityQuestionTwo: req.body.securityQuestionTwo,
+                securityQuestionTwoAnswer: req.body.securityQuestionTwoAnswer,
+            }, {
                 where: {
                     id: req.user.id
                 }
