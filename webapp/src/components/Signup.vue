@@ -54,14 +54,20 @@
 				       @input="validateConfirmPassword" v-bind:class="{ invalid: confirmPassword.isValid == false, valid: confirmPassword.isValid }">
 	
 				<input type="submit" value="Sign up" class="form-input form-input--block form-input--submit">
+
+				<p class="aligncenter notice">
+					Already have an account?
+					<router-link to="/login">Sign in</router-link>.
+				</p>
 			</form>
 		</div>
 	</main>
 </template>
 
 <script>
-	import router from "../router";
-	import { http, commonPasswordsApi } from "../common/http-common";
+	import router from "../router"
+	import { http, commonPasswordsApi } from "../common/http-common"
+	import isEmailValid from "../common/utils"
 	
 	export default {
 		name: "Signup",
@@ -90,7 +96,7 @@
 					isValid: null,
 					hint: ""
 				}
-			};
+			}
 		},
 		methods: {
 			signup: function(event) {
@@ -100,17 +106,17 @@
 					this.password.isValid &&
 					this.confirmPassword.isValid
 				) {
-					http.post("signup", {
+					http.post('signup', {
 							name: this.name.value,
 							email: this.email.value,
 							password: this.password.value
 						})
 						.then(response => {
 							// Store JWT Auth token in the local storage
-							localStorage.setItem("token", response.data.token);
+							localStorage.setItem('token', response.data.token);
 
 							// Redirect user to the security questions
-							router.push("signup/security-questions");
+							router.push('signup/security-questions');
 						})
 						.catch(e => {
 							//
@@ -121,15 +127,14 @@
 				// Check if the name field is not empty
 				let name = e.target ? e.target.value : e;
 				this.name.isValid = !!name;
-				this.name.hint = this.name.isValid ? "" : "Please enter a name.";
+				this.name.hint = this.name.isValid ? '' : 'Please enter a name.';
 				this.name.value = name;
 			},
 			validateEmail: function(e) {
 				// Check if the email field is not empty and is in a valid 
 				// 'email' format via Regular Expression (regex)
 				let email = e.target ? e.target.value : e;
-				let regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				this.email.isValid = regex.test(email);
+				this.email.isValid = isEmailValid(email);
 				this.email.hint = this.email.isValid ? "" : "Please enter a valid email address.";
 				this.email.value = email;
 			},
@@ -237,7 +242,7 @@
 		background: #2193b0;
 		background: -webkit-linear-gradient( to right, #6dd5ed, #2193b0);
 		background: linear-gradient( to right, #6dd5ed, #2193b0);
-		padding-top: 8em;
+		padding-top: 5em;
 	}
 	
 	.signup-title {
@@ -250,6 +255,11 @@
 		padding-top: 1.5em;
 		padding-bottom: 1.5em;
 		margin-top: 2em;
+	}
+
+	.notice {
+		margin-bottom: 0;
+		color: #505050;
 	}
 	
 	.password-hints {

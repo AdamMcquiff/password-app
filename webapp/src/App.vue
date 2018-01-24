@@ -40,6 +40,12 @@ a:focus {
     color: #2093b0;
 }
 
+hr {
+    opacity: .5;
+    border: 1px solid #D8D8D8;
+    margin: 2em 0 1.5em;
+}
+
 /* Utils */
 
 .aligncenter {
@@ -61,7 +67,13 @@ a:focus {
     -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
 }
- 
+
+.form-info {
+    line-height: 1.75;
+    color: #505050;
+    margin-top: 0;
+} 
+
 .form-label {
     float: left;
     display: block;
@@ -78,7 +90,7 @@ a:focus {
 
 .form-input {
     color: #505050;
-    background: #E3E3E3;
+    background-color: #E3E3E3;
     transition: .2s ease background;
  
     border: 0;
@@ -93,6 +105,18 @@ a:focus {
     -moz-box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16);
 }
+
+select.form-input {
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+    appearance: none;
+    background: url('./assets/sort-down.svg') 96% / 15% no-repeat #e3e3e3;
+    background-size: 1em;   
+}
+
+    select.form-input:hover {
+       background-color: #dddddd; 
+    }
 
 .form-input.invalid {
     border: 2px solid #F44336;
@@ -109,7 +133,7 @@ a:focus {
 .form-input:hover,
 .form-input:active,
 .form-input:focus {
-    background: #dddddd;
+    background-color: #dddddd;
 }
 
 .form-input--submit {   
