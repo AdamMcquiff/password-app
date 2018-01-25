@@ -127,11 +127,14 @@ export default {
         this.user.forename = getForenameFromName(response.data.name)
         this.user.email = response.data.email
         this.user.alternativeEmail = response.data.alternativeEmail
+
+        // Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
+        if (this.user.alternativeEmail != null) router.push('/')
       })
       .catch(e => {})
-
-    // Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
-    if (this.user.alternativeEmail != null) router.push('/')
+  },
+  created: function () {
+    this.httpHelper = new HttpHelper()
   },
   methods: {
     signup: function(e) {
@@ -151,7 +154,7 @@ export default {
             securityQuestionTwoAnswer: this.answer2.value
           })
           .then(response => {
-            router.push('/dashboard')
+            router.push('/')
           })
           .catch(e => {})
       } else {
