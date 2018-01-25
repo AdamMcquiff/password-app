@@ -18,3 +18,7 @@ export const commonPasswordsApi = axios.create({
     'Accept': 'text/plain'
   }
 })
+
+export const ipApi = axios.create({
+  baseURL: 'http://freegeoip.net/json/?callback=?'
+})

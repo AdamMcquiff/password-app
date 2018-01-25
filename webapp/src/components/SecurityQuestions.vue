@@ -77,7 +77,7 @@
 <script>
 	import router from "../router"
 	import { httpAuth } from "../common/http-common"
-	import isEmailValid from "../common/utils"
+	import { isEmailValid, getForenameFromName } from "../common/utils"
 	
 	export default {
 		name: "Signup",
@@ -116,7 +116,7 @@
 		created: function () {
 			httpAuth.get('profile')
 				.then(response => {
-					this.user.forename = response.data.name.replace(/ .*/,'')
+					this.user.forename = getForenameFromName(response.data.name)
 					this.user.email = response.data.email
 				})
 				.catch(e => {
@@ -140,15 +140,18 @@
 							securityQuestionTwoAnswer: this.answer2.value,
 						})
 						.then(response => {
-							router.push("dashboard")
+							router.push("/dashboard")
 						})
 						.catch(e => {
 							console.log(e)
 						})
+				} else {
+					this.validateEmail(this.email.value)
+					// TODO: validate q and
 				}
 			},
 			validateEmail: function (e) {
-				let email = e.target.value
+				let email = e.target ? e.target.value : e
 
 				this.email.isValid = false
 				this.email.hint = ""

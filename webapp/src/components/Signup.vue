@@ -67,7 +67,7 @@
 <script>
 	import router from "../router"
 	import { http, commonPasswordsApi } from "../common/http-common"
-	import isEmailValid from "../common/utils"
+	import { isEmailValid } from "../common/utils"
 	
 	export default {
 		name: "Signup",
@@ -113,14 +113,14 @@
 						})
 						.then(response => {
 							// Store JWT Auth token in the local storage
-							localStorage.setItem('token', response.data.token);
+							localStorage.setItem('token', response.data.token)
 
 							// Redirect user to the security questions
-							router.push('signup/security-questions');
+							router.push('signup/security-questions')
 						})
 						.catch(e => {
 							//
-						});
+						})
 				}
 			},
 			validateName: function(e) {

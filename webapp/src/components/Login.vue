@@ -34,10 +34,15 @@
 
 <script>
 import router from "../router";
-import { http } from "../common/http-common";
+import { http, httpAuth } from "../common/http-common";
+import { getClientData } from "../common/utils"
 
 export default {
   name: "Login",
+  created: function() {
+    // Check if the user is signed in, if so, redirect to the dashboard
+    if (localStorage.getItem('token') != null) router.push("dashboard")
+  },
   methods: {
     login: function(event) {
       let email = event.target.elements.email.value;
@@ -52,6 +57,19 @@ export default {
           .then(response => {
             // Store JWT Auth token in the local storage
             localStorage.setItem("token", response.data.token);
+
+            getClientData().then(data => {
+              // Log the login event to the API
+              httpAuth
+                .post("log-signin", {
+                  ip: data.ip,
+                  hostname: "2001:630:a4:e3:80b7:91d9:713a:c0f5",
+                  datetime: new Date()
+                })
+                .then(response => {})
+                .catch(e => {});
+            })
+            
 
             // Redirect user to the dashboard
             router.push("dashboard");

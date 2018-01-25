@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import Dashboard from '@/components/Dashboard'
 import Login from '@/components/Login'
 import Signup from '@/components/Signup'
 import SecurityQuestions from '@/components/SecurityQuestions'
@@ -20,5 +21,9 @@ export default new Router({
     path: '/signup/security-questions',
     name: 'SignupSecurityQuestions',
     component: SecurityQuestions
+  }, {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard
   }]
 })
