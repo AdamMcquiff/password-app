@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import router from "../router"
-import HttpHelper from "../common/http-common"
-import { isEmailValid, getClientData } from "../common/utils"
+import router from '../router'
+import HttpHelper from '../common/http-common'
+import { isEmailValid, getClientData } from '../common/utils'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data: () => {
       return {
         httpHelper: null,

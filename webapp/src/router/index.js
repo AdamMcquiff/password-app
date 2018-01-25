@@ -3,15 +3,18 @@ import Router from 'vue-router'
 
 import Dashboard from '@/components/Dashboard'
 import Login from '@/components/Login'
+import Home from '@/components/Home'
+import Notifications from '@/components/Notifications'
 import Signup from '@/components/Signup'
 import SecurityQuestions from '@/components/SecurityQuestions'
+import Settings from '@/components/Settings'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [{
     path: '/',
-    name: 'Login',
+    name: 'Login', 
     component: Login
   }, {
     path: '/signup',
@@ -24,6 +27,20 @@ export default new Router({
   }, {
     path: '/dashboard',
     name: 'Dashboard',
-    component: Dashboard
+    component: Dashboard,
+    redirect: { name: 'Home' },
+    children: [{
+      path: 'home',
+      name: 'Home',
+      component: Home
+    }, {
+      path: 'settings',
+      name: 'Settings',
+      component: Settings
+    }, {
+      path: 'notifications',
+      name: 'Notifications',
+      component: Notifications
+    }]
   }]
 })

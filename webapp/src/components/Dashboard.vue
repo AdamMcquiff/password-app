@@ -2,38 +2,29 @@
     <main class="dashboard">
         <nav class="nav">  
             <div class="wrapper">
-                <button class="icon notifications" aria-label="Notiication Settings"></button>
-                <button class="icon settings" aria-label="General Settings"></button>
+                <router-link :to="{ name: 'Notifications' }">
+                    <button class="icon notifications" aria-label="Notification Settings"></button>
+                </router-link>
+
+                <router-link :to="{ name: 'Settings' }">
+                    <button class="icon settings" aria-label="General Settings"></button>
+                </router-link>
+
                 <hr>
-                <button class="icon signout" aria-label="Signout"></button>
+                <button class="icon signout" aria-label="Signout" v-on:click="signout"></button>
             </div>
         </nav>
 
         <aside class="sidebar">
-            <div class="avatar"></div>
+            <router-link :to="{ name: 'Home' }">
+                <div class="avatar"></div>
+            </router-link>
         </aside>
-
-        <section>
-            <h1>
-                Hi {{ this.user.forename }}.
-            </h1>
-
-            <h2>
-                Last Logins
-            </h2>
-
-            <table>
-                <tr>
-                    <th>IP Address</th>
-                    <th>Hostname</th>
-                    <th>Date/Time</th>
-                </tr>
-                <tr v-for="login in user.logins" v-bind:key="login">
-                    <td>{{ login.ip }}</td>
-                    <td>{{ login.hostname }}</td>
-                    <td>{{ login.datetime }}</td>
-                </tr>
-            </table>
+        
+        <section>    
+            <transition name="page" mode="out-in">
+                <router-view></router-view>
+            </transition>
         </section>
     </main>
 </template>
@@ -53,7 +44,10 @@ export default {
             }
         }
     },
-    created: function() {
+    beforeCreate: function () {
+        // Check if the user is signed in, if not, redirect to login
+        if (localStorage.getItem('token') == null) router.push('/')
+
         this.httpHelper = new HttpHelper();
 
         this.httpHelper.httpAuth.get('profile')
@@ -64,7 +58,10 @@ export default {
             .catch(e => {})
     },
     methods: {
-        //
+        signout: function() {
+            localStorage.removeItem('token')
+            router.push('/')
+        }
     }
 };
 </script>
@@ -74,7 +71,7 @@ export default {
     position: fixed;
     background: #2193B0;
     width: 4.6875em;
-    height: 100vh;
+    height: 150vh;
     padding: 1em 1.5em;
 }
 
@@ -125,7 +122,7 @@ export default {
     background: #61C4E2;
     left: 4.6875em;
     width: 9.375em;
-    height: 100vh;
+    height: 150vh;
     padding: 1.5em;
 }
 
@@ -144,36 +141,4 @@ section {
     padding: 1.5em;
     width: calc(100% - 14.0675em);
 }
-
-    section h1 {
-        margin-top: 0;
-    }
-
-    section h2 {
-        font-size: 1.25em;
-        font-weight: 500;
-    }
-
-    section table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    section th {
-        text-align: left;
-        font-weight: 500;
-        padding: 0 1em 0 .25em;
-        line-height: 1.75;
-    }
-
-    section td {
-        color: #505050;
-        font-weight: 200;
-        padding: .25em 2em .25em .25em;
-        line-height: 1.75;
-    }
-    
-    section tr:nth-child(even) {
-        background: #E3E3E3;
-    }
 </style>
