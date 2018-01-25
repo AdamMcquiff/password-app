@@ -65,193 +65,178 @@
 </template>
 
 <script>
-	import router from '../router'
-	import HttpHelper, { commonPasswordsApi } from '../common/http-common'
-	import { isEmailValid, getClientData } from '../common/utils'
-	
-	export default {
-		name: 'Signup',
-		data: () => {
-			return {
-				name: {
-					value: '',
-					isValid: null,
-					hint: ''
-				},
-				email: {
-					value: '',
-					isValid: null,
-					hint: ''
-				},
-				password: {
-					value: '',			// Store password
-					isValid: null,		// Boolean to check if the password is valid
-					hints: [],			// Array of text hints to be presented to the user
-					progress: 0, 		// The progress made on addressing all password tips. Scale: 0-5
-					rating: '', 		// the text label rating of the password; e.g. "Very Good", "Poor", etc
-					commonality: 0 		// the amount of times the password appears in 'lists' across the web
-				},
-				confirmPassword: {
-					value: '',
-					isValid: null,
-					hint: ''
-				}
-			}
-		},
-		created: function () {
-			// Check if the user is signed in, if so, redirect to the dashboard
-			if (localStorage.getItem('token') != null) router.push('/')
-		},
-		methods: {
-			signup: function(event) {
-				let helper = new HttpHelper();
+import router from '../router'
+import HttpHelper, { commonPasswordsApi } from '../common/http-common'
+import { isEmailValid, getClientData } from '../common/utils'
 
-				if (
-					this.name.isValid &&
-					this.email.isValid &&
-					this.password.isValid &&
-					this.confirmPassword.isValid
-				) {
-					helper.http.post('signup', {
-							name: this.name.value,
-							email: this.email.value,
-							password: this.password.value
-						})
-						.then(response => {
-							// Store JWT Auth token in the local storage
-                            localStorage.setItem('token', response.data.token)
-                            
-                            // Refresh the JWT token so that the HttpHelper can access protected API routes
-                            helper.refreshToken()
+export default {
+  name: 'Signup',
+  data: () => {
+    return {
+      name: {
+        value: '',
+        isValid: null,
+        hint: ''
+      },
+      email: {
+        value: '',
+        isValid: null,
+        hint: ''
+      },
+      password: {
+        value: '',			// Store password
+        isValid: null,		// Boolean to check if the password is valid
+        hints: [],			// Array of text hints to be presented to the user
+        progress: 0, 		// The progress made on addressing all password tips. Scale: 0-5
+        rating: '', 		// the text label rating of the password; e.g. "Very Good", "Poor", etc
+        commonality: 0 		// the amount of times the password appears in 'lists' across the web
+      },
+      confirmPassword: {
+        value: '',
+        isValid: null,
+        hint: ''
+      }
+    }
+  },
+  created: function () {
+    // Check if the user is signed in, if so, redirect to the dashboard
+    if (localStorage.getItem('token') != null) router.push('/')
+  },
+  methods: {
+    signup: function(event) {
+      let helper = new HttpHelper()
 
-							// Get user's client data (ip address, etc.) and log to
-							getClientData().then(data => {
-								helper.httpAuth.post('log-signin', {
-										ip: data.ip,
-										hostname: '2001:630:a4:e3:80b7:91d9:713a:c0f5', // Dummy hostname data, as system is only a prototype
-										datetime: new Date() 
-									})
-									.then(response => {})
-									.catch(e => {});
-							})
+      if (
+        this.name.isValid &&
+        this.email.isValid &&
+        this.password.isValid &&
+        this.confirmPassword.isValid
+      ) {
+        helper.http.post('signup', {
+            name: this.name.value,
+            email: this.email.value,
+            password: this.password.value
+          })
+          .then(response => {
+            // Store JWT Auth token in the local storage
+            localStorage.setItem('token', response.data.token)
+                          
+            // Refresh the JWT token so that the HttpHelper can access protected API routes
+            helper.refreshToken()
 
-							// Redirect user to the security questions
-							router.push('signup/security-questions')
-						})
-						.catch(e => {})
-				}
-			},
-			validateName: function(e) {
-				// Check if the name field is not empty
-				// let name = e.target ? e.target.value : e
-				this.name.isValid = !!this.name.value
-				this.name.hint = this.name.isValid ? '' : 'Please enter a name.'
-			},
-			validateEmail: function(e) {
-				// Check if the email field is not empty and is in a valid 
-				// 'email' format via Regular Expression (regex)
-				this.email.isValid = isEmailValid(this.email.value)
-				this.email.hint = this.email.isValid ? '' : 'Please enter a valid email address.'
-			},
-			validateConfirmPassword: function(e) {
-				// Reset boolean and hint
-				this.confirmPassword.isValid = false
-				this.confirmPassword.hint = ''
+            // Get user's client data (ip address, etc.) and log to
+            getClientData().then(data => {
+              helper.httpAuth.post('log-signin', {
+                  ip: data.ip,
+                  hostname: '2001:630:a4:e3:80b7:91d9:713a:c0f5', // Dummy hostname data, as system is only a prototype
+                  datetime: new Date() 
+                })
+                .then(response => {})
+                .catch(e => {});
+            })
 
-				// Check if original password is valid; check paswords match
-				if (!this.password.isValid) this.confirmPassword.hint = 'Please ensure orignal password is valid'
-				else if (this.confirmPassword.value != this.password.value) this.confirmPassword.hint = 'Passwords do not match'
-				else this.confirmPassword.isValid = true
-			},
-			validatePassword: function(e) {
-				// Check if the password field is not empty and matches a multi-step validation process
+            // Redirect user to the security questions
+            router.push('signup/security-questions')
+          })
+          .catch(e => {})
+      }
+    },
+    validateName: function(e) {
+      // Check if the name field is not empty
+      // let name = e.target ? e.target.value : e
+      this.name.isValid = !!this.name.value
+      this.name.hint = this.name.isValid ? '' : 'Please enter a name.'
+    },
+    validateEmail: function(e) {
+      // Check if the email field is not empty and is in a valid 
+      // 'email' format via Regular Expression (regex)
+      this.email.isValid = isEmailValid(this.email.value)
+      this.email.hint = this.email.isValid ? '' : 'Please enter a valid email address.'
+    },
+    validateConfirmPassword: function(e) {
+      // Reset boolean and hint
+      this.confirmPassword.isValid = false
+      this.confirmPassword.hint = ''
 
-				// Connect to a 'common password' API via axios and check to see if the input password
-				// is shown in any of the 'lists'. This API is buggy and returns a 404 if the password
-				// is not in any lists, therefore I have had to work around that in my JS Promise.
-				commonPasswordsApi.get(this.password.value)
-					.then(response => {
-						// Store how many lists the password appears in
-						this.password.commonality = response.data.list.length
-					})
-					.catch(e => {
-						// 404 Error: the password appears in no lists. Therefore, the commonality is 0.
-						this.password.commonality = 0
-					}).finally(() => {
-						// Generate password hints each API call to avoid 
-						// duplicate data being presented to the user
-						this.generatePasswordHints(this.password.value)
-					})
+      // Check if original password is valid; check paswords match
+      if (!this.password.isValid) this.confirmPassword.hint = 'Please ensure orignal password is valid'
+      else if (this.confirmPassword.value != this.password.value) this.confirmPassword.hint = 'Passwords do not match'
+      else this.confirmPassword.isValid = true
+    },
+    validatePassword: function(e) {
+      // Check if the password field is not empty and matches a multi-step validation process
 
-					// Generate once before the API finishes to avoid the system appearing laggy
-					this.generatePasswordHints(this.password.value)
-			},
-			generatePasswordHints: function(password) {
-				// Reset the hints array to avoid duplication
-				this.password.hints = []
+      // Connect to a 'common password' API via axios and check to see if the input password
+      // is shown in any of the 'lists'. This API is buggy and returns a 404 if the password
+      // is not in any lists, therefore I have had to work around that in my JS Promise.
+      commonPasswordsApi.get(this.password.value)
+        .then(response => {
+          // Store how many lists the password appears in
+          this.password.commonality = response.data.list.length
+        })
+        .catch(e => {
+          // 404 Error: the password appears in no lists. Therefore, the commonality is 0.
+          this.password.commonality = 0
+        }).finally(() => {
+          // Generate password hints each API call to avoid 
+          // duplicate data being presented to the user
+          this.generatePasswordHints(this.password.value)
+        })
 
-				// Check if password has commonality. If it does, inform the user how many lists it appears in.
-				if (this.password.commonality != 0)
-					this.password.hints.push(
-						'This password is very common and is listed in at least ' + this.password.commonality + ' list(s)* across the web.'
-					)
-				
-				// Check if password under 6 characters, inform the user if so.
-				if (password.length <= 6)
-					this.password.hints.push('Password should be 6 or more characters.')
+        // Generate once before the API finishes to avoid the system appearing laggy
+        this.generatePasswordHints(this.password.value)
+    },
+    generatePasswordHints: function(password) {
+      // Reset the hints array to avoid duplication
+      this.password.hints = []
 
-				// Check if password contains an uppercase and lowercase character, inform the user if not.
-				if (!/[a-z]/.test(password) || !/[A-Z]/.test(password))
-					this.password.hints.push('Password should contain a least one uppercase and lowercase character.')
+      // Check if password has commonality. If it does, inform the user how many lists it appears in.
+      if (this.password.commonality != 0)
+        this.password.hints.push(
+          'This password is very common and is listed in at least ' + this.password.commonality + ' list(s)* across the web.'
+        )
+      
+      // Check if password under 6 characters, inform the user if so.
+      if (password.length <= 6)
+        this.password.hints.push('Password should be 6 or more characters.')
 
-				// Check if password contains a digit, inform the user if not.
-				if (!/\d/.test(password))
-					this.password.hints.push('Password should contain a least one digit.')
+      // Check if password contains an uppercase and lowercase character, inform the user if not.
+      if (!/[a-z]/.test(password) || !/[A-Z]/.test(password))
+        this.password.hints.push('Password should contain a least one uppercase and lowercase character.')
 
-				// Check if password contains a special character, inform the user if not.
-				if (!/[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password))
-					this.password.hints.push('Password should contain a least one special character.')
+      // Check if password contains a digit, inform the user if not.
+      if (!/\d/.test(password))
+        this.password.hints.push('Password should contain a least one digit.')
 
-				// Calculate the password 'progress' by taking away the total no. of possible hints
-				// from the actual amount. This value is then used in the progress bar.
-				this.password.progress = 5 - this.password.hints.length
+      // Check if password contains a special character, inform the user if not.
+      if (!/[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password))
+        this.password.hints.push('Password should contain a least one special character.')
 
-				// Password is valid if the progress is 5; i.e. there are no hints.
-				this.password.isValid = this.password.progress == 5
+      // Calculate the password 'progress' by taking away the total no. of possible hints
+      // from the actual amount. This value is then used in the progress bar.
+      this.password.progress = 5 - this.password.hints.length
 
-				// Get the password rating text to display to the user.
-				this.password.rating = this.getPasswordRating(this.password.progress)
+      // Password is valid if the progress is 5; i.e. there are no hints.
+      this.password.isValid = this.password.progress == 5
 
-				// Store password value
-				this.password.value = password
-			},
-			getPasswordRating: function(progress) {
-				let ratings = {
-					'1': {
-						title: 'Very Poor',
-						colour: 'red'
-					},
-					'2': {
-						title: 'Poor',
-						colour: 'red'
-					},
-					'3': {
-						title: 'Okay',
-						colour: 'amber',
-					},
-					'4': {
-						title: 'Good',
-						colour: 'green',
-					},
-					'5': {
-						title: 'Excellent',
-						colour: 'green',
-					},
-				}
-				return ratings[progress] || ratings[1]
-			},
-		}
-	};
+      // Get the password rating text to display to the user.
+      this.password.rating = this.getPasswordRating(this.password.progress)
+
+      // Store password value
+      this.password.value = password
+    },
+    getPasswordRating: function(progress) {
+      let ratings = {
+        '1': { title: 'Very Poor', colour: 'red' },
+        '2': { title: 'Poor', colour: 'red' },
+        '3': { title: 'Okay', colour: 'amber' },
+        '4': { title: 'Good', colour: 'green' },
+        '5': { title: 'Excellent', colour: 'green' },
+      }
+      return ratings[progress] || ratings[1]
+    },
+  }
+}
 </script>
 
 <style scoped>

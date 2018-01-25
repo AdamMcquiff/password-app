@@ -11,12 +11,10 @@
         <table>
             <tr>
                 <th>IP Address</th>
-                <th>Hostname</th>
                 <th>Date/Time</th> 
             </tr>
             <tr v-for="login in user.logins" v-bind:key="login.datetime">
                 <td>{{ login.ip }}</td>
-                <td>{{ login.hostname }}</td>
                 <td>{{ login.datetime }}</td>
             </tr>
         </table>
@@ -25,35 +23,40 @@
 
 <script>
 import router from '../router'
+import moment from 'moment'
 import HttpHelper from '../common/http-common'
 import { isJWTTokenValid } from '../common/auth'
 import { getForenameFromName } from '../common/utils'
-import { CLIENT_RENEG_LIMIT } from 'tls';
 
 export default {
-    name: 'Home',
-    data: () => {
-        return {
-            httpHelper: null,
-            user: {
-                forename: ''
-            }
-        }
-    },
-    beforeCreate: function () {
-        // Check if the user is signed in, if not, redirect to login
-        if (!isJWTTokenValid()) router.push('/login')
- 
-        this.httpHelper = new HttpHelper();
-
-        this.httpHelper.httpAuth.get('profile')
-            .then(response => {
-                this.user.forename = getForenameFromName(response.data.name)
-                this.user.logins = response.data.Logins
-            })
-            .catch(e => {})
+  name: 'Home',
+  data: () => {
+    return {
+      httpHelper: null,
+      user: {
+        forename: ''
+      }
     }
-};
+  },
+  beforeCreate: function () {
+    // Check if the user is signed in, if not, redirect to login
+    if (!isJWTTokenValid()) router.push('/login')
+ 
+    this.httpHelper = new HttpHelper()
+
+    this.httpHelper.httpAuth.get('profile')
+      .then(response => {
+        this.user.forename = getForenameFromName(response.data.name)
+        this.user.logins = response.data.Logins
+          .sort((a, b) => b.datetime.localeCompare(a.datetime))
+          .map(login => {
+            login.datetime = moment(login.datetime).format('MM/DD/YYYY h:mm a')
+            return login
+          })
+      })
+      .catch(e => {})
+  }
+}
 </script>
 
 <style scoped>

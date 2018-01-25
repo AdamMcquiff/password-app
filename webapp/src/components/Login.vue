@@ -49,31 +49,31 @@ import { isEmailValid, getClientData } from '../common/utils'
 export default {
   name: 'Login',
   data: () => {
-      return {
-        httpHelper: null,
-        email: {
-          value: "",
-          isValid: null,
-          hint: ""
-        },
-        password: {
-          value: "",
-          isValid: null,
-          hint: ""
-        }
+    return {
+      httpHelper: null,
+      email: {
+        value: "",
+        isValid: null,
+        hint: ""
+      },
+      password: {
+        value: "",
+        isValid: null,
+        hint: ""
       }
+    }
   },
   created: function() {
     // Check if the user is signed in, if so, redirect to the dashboard
-    if (localStorage.getItem('token') != null && isJWTTokenValid()) router.push('/')
+    if (localStorage.getItem('token') !== null && isJWTTokenValid()) router.push('/')
 
     // Initialise the HttpHelper
     this.httpHelper = new HttpHelper()
   },
   methods: {
     login: function(event) {
-      let email = event.target.elements.email.value;
-      let password = event.target.elements.password.value;
+      let email = event.target.elements.email.value
+      let password = event.target.elements.password.value
 
       if (
         this.email.isValid && 
@@ -85,7 +85,7 @@ export default {
           })
           .then(response => {
             // Store JWT Auth token in the local storage
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', response.data.token)
 
             // Refresh the JWT token so that the HttpHelper can access protected API routes
             this.httpHelper.refreshToken()
@@ -98,27 +98,27 @@ export default {
                   datetime: new Date()
                 })
                 .then(response => {})
-                .catch(e => {});
+                .catch(e => {})
             })
 
             // Redirect user to the dashboard
-            router.push('/');
+            router.push('/')
           })
-          .catch(e => {});
+          .catch(e => {})
       }
     },
     validateEmail: function(e) {
       // Check if the email field is not empty and is in a valid 
       // 'email' format via Regular Expression (regex)
-      this.email.isValid = isEmailValid(this.email.value);
-      this.email.hint = this.email.isValid ? '' : 'Please enter a valid email address.';
+      this.email.isValid = isEmailValid(this.email.value)
+      this.email.hint = this.email.isValid ? '' : 'Please enter a valid email address.'
     },
     validatePassword: function(e) {
-      this.password.isValid = this.password.value != '';
-      this.password.hint = this.password.isValid ? '' : 'Please enter a password.';
+      this.password.isValid = this.password.value !== ''
+      this.password.hint = this.password.isValid ? '' : 'Please enter a password.'
     }
   }
-};
+}
 </script>
 
 <style scoped>

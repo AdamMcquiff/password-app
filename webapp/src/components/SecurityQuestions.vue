@@ -81,158 +81,155 @@ import { isJWTTokenValid } from '../common/auth'
 import { isEmailValid, getForenameFromName } from '../common/utils'
 
 export default {
-	name: 'Signup',
-	data: () => {
-		return {
-			httpHelper: null,
-			user: {
-				forename: ''
-			},
-			email: {
-				value: '',
-				isValid: null,
-				hint: ''
-			},
-			answer1: {
-				question: {
-					value: '',
-					hint: '',
-					isValid: null
-				},
-				value: '',
-				isValid: null,
-				hint: ''
-			},
-			answer2: {
-				question: {
-					value: '',
-					hint: '',
-					isValid: null
-				},
-				value: '',
-				isValid: null,
-				hint: ''
-			},
-		}
-	},
-	beforeCreate: function () {
-		// Check if the user is signed in, if not, redirect to login
-		if (!isJWTTokenValid()) router.push('/login')
+  name: 'Signup',
+  data: () => {
+    return {
+      httpHelper: null,
+      user: {
+        forename: ""
+      },
+      email: {
+        value: "",
+        isValid: null,
+        hint: ""
+      },
+      answer1: {
+        question: {
+          value: "",
+          hint: "",
+          isValid: null
+        },
+        value: "",
+        isValid: null,
+        hint: ""
+      },
+      answer2: {
+        question: {
+          value: "",
+          hint: "",
+          isValid: null
+        },
+        value: "",
+        isValid: null,
+        hint: ""
+      }
+    }
+  },
+  beforeCreate: function() {
+    // Check if the user is signed in, if not, redirect to login
+    if (!isJWTTokenValid()) router.push('/login')
 
-		this.httpHelper = new HttpHelper();
+    this.httpHelper = new HttpHelper()
 
-		// Get the users profile and store data locally
-		this.httpHelper.httpAuth.get('profile')
-			.then(response => {
-				this.user.forename = getForenameFromName(response.data.name)
-				this.user.email = response.data.email
-				this.user.alternativeEmail = response.data.alternativeEmail
-			})
-			.catch(e => {})
+    // Get the users profile and store data locally
+    this.httpHelper.httpAuth.get('profile')
+      .then(response => {
+        this.user.forename = getForenameFromName(response.data.name)
+        this.user.email = response.data.email
+        this.user.alternativeEmail = response.data.alternativeEmail
+      })
+      .catch(e => {})
 
-		// Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
-		if (this.user.alternativeEmail != null) router.push('/')
-	},
-	methods: {
-		signup: function (e) {
-			if (
-				this.email.isValid &&
-				this.answer1.isValid &&
-				this.answer1.question.isValid &&
-				this.answer2.isValid &&
-				this.answer2.question.isValid
-			) {
-				// Update the user's profile with the security data
-				this.httpHelper.httpAuth.post('profile', {
-						alternativeEmail: this.email.value,
-						securityQuestionOne: this.answer1.question.value,
-						securityQuestionOneAnswer: this.answer1.value,
-						securityQuestionTwo: this.answer2.question.value,
-						securityQuestionTwoAnswer: this.answer2.value,
-					})
-					.then(response => {
-						router.push('/dashboard')
-					})
-					.catch(e => {
-						console.log(e)
-					})
-			} else {
-				this.validateEmail(this.email.value)
-				// TODO: validate q and
-			}
-		},
-		validateEmail: function (e) {
-			let email = e.target ? e.target.value : e
+    // Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
+    if (this.user.alternativeEmail != null) router.push('/')
+  },
+  methods: {
+    signup: function(e) {
+      if (
+        this.email.isValid &&
+        this.answer1.isValid &&
+        this.answer1.question.isValid &&
+        this.answer2.isValid &&
+        this.answer2.question.isValid
+      ) {
+        // Update the user's profile with the security data
+        this.httpHelper.httpAuth.post('profile', {
+            alternativeEmail: this.email.value,
+            securityQuestionOne: this.answer1.question.value,
+            securityQuestionOneAnswer: this.answer1.value,
+            securityQuestionTwo: this.answer2.question.value,
+            securityQuestionTwoAnswer: this.answer2.value
+          })
+          .then(response => {
+            router.push('/dashboard')
+          })
+          .catch(e => {})
+      } else {
+        this.validateEmail(this.email.value)
+        // TODO: validate q and
+      }
+    },
+    validateEmail: function(e) {
+      let email = e.target ? e.target.value : e
 
-			this.email.isValid = false
-			this.email.hint = ''
-			
-			if (!isEmailValid(email))
-				this.email.hint = 'Please enter a valid email address.'
-			else if (email == this.user.email)
-				this.email.hint = 'Alternative email must be different from main email address.'
-			else 
-				this.email.isValid = true
-		},
-		validateQuestion: function (e) {
-			let question = e.target.name
-			let isValid = this.answer1.question.value != this.answer2.question.value
-			
-			this.answer1.question.hint = ''
-			this.answer2.question.hint = ''
+      this.email.isValid = false
+      this.email.hint = ''
 
-			if (!isValid) {
-				if (question == 'question1') {
-					this.answer1.question.hint = 'Please select a different question to question 2.'
-					this.answer1.question.isValid = false
-				} else if (question == 'question2') {
-					this.answer2.question.hint = 'Please select a different question to question 1.'
-					this.answer2.question.isValid = false
-				}
-			} else {
-				if (this.answer1.question.value != '')
-					this.answer1.question.isValid = true
-				if (this.answer2.question.value != '')
-					this.answer2.question.isValid = true
-			}
-		},
-		validateAnswer: function (e) {
-			let answer = e.target.value
+      if (!isEmailValid(email))
+        this.email.hint = 'Please enter a valid email address.'
+      else if (email == this.user.email)
+        this.email.hint = 'Alternative email must be different from main email address.'
+      else this.email.isValid = true
+    },
+    validateQuestion: function(e) {
+      let question = e.target.name
+      let isValid = this.answer1.question.value != this.answer2.question.value
 
-			let isValid = !!answer
-			let hint = isValid ? '' : 'Please enter an answer.'
+      this.answer1.question.hint = ''
+      this.answer2.question.hint = ''
 
-			if (e.srcElement.name == 'answer-1') {
-				this.answer1.isValid = isValid
-				this.answer1.hint = hint
-			} else {
-				this.answer2.isValid = isValid
-				this.answer2.hint = hint
-			}
-		}
-	}
-}
+      if (!isValid) {
+        if (question == 'question1') {
+          this.answer1.question.hint = 'Please select a different question to question 2.'
+          this.answer1.question.isValid = false
+        } else if (question == 'question2') {
+          this.answer2.question.hint = 'Please select a different question to question 1.'
+          this.answer2.question.isValid = false
+        }
+      } else {
+        if (this.answer1.question.value != '')
+          this.answer1.question.isValid = true
+        if (this.answer2.question.value != '')
+          this.answer2.question.isValid = true
+      }
+    },
+    validateAnswer: function(e) {
+      let answer = e.target.value
+
+      let isValid = !!answer
+      let hint = isValid ? '' : 'Please enter an answer.'
+
+      if (e.srcElement.name == 'answer-1') {
+        this.answer1.isValid = isValid
+        this.answer1.hint = hint
+      } else {
+        this.answer2.isValid = isValid
+        this.answer2.hint = hint
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
-	.signup {
-		min-height: 150vh;
-		overflow: hidden;
-		background: #2193b0;
-		background: -webkit-linear-gradient( to right, #6dd5ed, #2193b0);
-		background: linear-gradient( to right, #6dd5ed, #2193b0);
-		padding-top: 5em;
-	}
-	
-	.signup-title {
-		color: #fff;
-		font-weight: 300;
-	}
-	
-	.signup-form {
-		position: relative;
-		padding-top: 1.5em;
-		padding-bottom: 1.5em;
-		margin-top: 2em;
-	}
+.signup {
+  min-height: 150vh;
+  overflow: hidden;
+  background: #2193b0;
+  background: -webkit-linear-gradient(to right, #6dd5ed, #2193b0);
+  background: linear-gradient(to right, #6dd5ed, #2193b0);
+  padding-top: 5em;
+}
+
+.signup-title {
+  color: #fff;
+  font-weight: 300;
+}
+
+.signup-form {
+  position: relative;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  margin-top: 2em;
+}
 </style>

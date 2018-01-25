@@ -36,35 +36,35 @@ import { isJWTTokenValid } from '../common/auth'
 import { getForenameFromName } from '../common/utils'
 
 export default {
-    name: 'Dashboard',
-    data: () => {
-        return {
-            httpHelper: null,
-            user: {
-                forename: ''
-            }
-        }
-    },
-    beforeCreate: function () {
-        // Check if the user is signed in, if not, redirect to login
-        if (!isJWTTokenValid()) router.push('/login')
-
-        this.httpHelper = new HttpHelper();
-
-        this.httpHelper.httpAuth.get('profile')
-            .then(response => {
-                this.user.forename = getForenameFromName(response.data.name)
-                this.user.logins = response.data.Logins
-            })
-            .catch(e => {})
-    },
-    methods: {
-        signout: function() {
-            localStorage.removeItem('token')
-            router.push('/login')
-        }
+  name: 'Dashboard',
+  data: () => {
+    return {
+      httpHelper: null,
+      user: {
+          forename: ''
+      }
     }
-};
+  },
+  beforeCreate: function () {
+    // Check if the user is signed in, if not, redirect to login
+    if (!isJWTTokenValid()) router.push('/login')
+
+    this.httpHelper = new HttpHelper()
+
+    this.httpHelper.httpAuth.get('profile')
+      .then(response => {
+        this.user.forename = getForenameFromName(response.data.name)
+        this.user.logins = response.data.Logins
+      })
+      .catch(e => {})
+  },
+  methods: {
+    signout: function() {
+      localStorage.removeItem('token')
+      router.push('/login')
+    }
+  }
+}
 </script>
 
 <style scoped>
