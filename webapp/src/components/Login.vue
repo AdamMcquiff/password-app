@@ -8,16 +8,24 @@
             <form v-on:submit.prevent="login">
                 <label for="email" class="form-label">
                     Email address
+                    <span role="tooltip" class="error" v-if="email.hint">
+                      {{ email.hint }}
+                    </span>
                 </label>
-                <input type="email" name="email" placeholder="Enter email..." class="form-input form-input--block">
+                <input type="email" name="email" v-model="email.value" placeholder="Enter email..." class="form-input form-input--block"
+                       @input="validateEmail" v-bind:class="{ invalid: email.isValid == false, valid: email.isValid }">
 
                 <label for="password" class="form-label">
                     Password
+                    <span role="tooltip" class="error" v-if="password.hint">
+                      {{ password.hint }}
+                    </span>
                 </label>
                 <router-link to="/forgotten-password" class="form-forgotten-password">
                     Forgot password?
                 </router-link>
-                <input type="password" name="password" placeholder="Enter password" class="form-input form-input--block">
+                <input type="password" name="password" v-model="password.value" placeholder="Enter password" class="form-input form-input--block"
+                       @input="validatePassword" v-bind:class="{ invalid: password.isValid == false, valid: password.isValid }">
 
                 <input type="submit" value="Sign in" class="form-input form-input--block form-input--submit">
             </form>
@@ -35,13 +43,23 @@
 <script>
 import router from "../router"
 import HttpHelper from "../common/http-common"
-import { getClientData } from "../common/utils"
+import { isEmailValid, getClientData } from "../common/utils"
 
 export default {
   name: "Login",
   data: () => {
       return {
-          httpHelper: null
+        httpHelper: null,
+        email: {
+          value: "",
+          isValid: null,
+          hint: ""
+        },
+        password: {
+          value: "",
+          isValid: null,
+          hint: ""
+        }
       }
   },
   created: function() {
@@ -56,7 +74,10 @@ export default {
       let email = event.target.elements.email.value;
       let password = event.target.elements.password.value;
 
-      if (this.isEmailValid(email) && password) {
+      if (
+        this.email.isValid && 
+        this.password.isValid
+      ) {
         this.httpHelper.http.post('login', {
             email: email,
             password: password
@@ -89,8 +110,15 @@ export default {
           });
       }
     },
-    isEmailValid: function(email) {
-      return true;
+    validateEmail: function(e) {
+      // Check if the email field is not empty and is in a valid 
+      // 'email' format via Regular Expression (regex)
+      this.email.isValid = isEmailValid(this.email.value);
+      this.email.hint = this.email.isValid ? "" : "Please enter a valid email address.";
+    },
+    validatePassword: function(e) {
+      this.password.isValid = this.password.value != "";
+      this.password.hint = this.password.isValid ? "" : "Please enter a password.";
     }
   }
 };
