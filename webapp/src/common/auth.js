@@ -1,14 +1,18 @@
 import jwtDecode from 'jwt-decode'
 
 export function isJWTTokenValid () {
-  let isExpired = false
+  let isValid = false
   try {
     let token = localStorage.getItem('token')
     let decodedToken = jwtDecode(token)
     let dateNow = new Date()
-    if (decodedToken.exp < dateNow.getTime()) isExpired = true
-    return isExpired
+    if (decodedToken.exp < dateNow.getTime()) {
+      isValid = true
+    } else {
+      localStorage.removeItem('token')
+    }
   } catch (e) {
-    return isExpired
+    isValid = false
   }
+  return isValid
 }
