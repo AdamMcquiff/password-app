@@ -66,8 +66,8 @@
 
 <script>
 	import router from "../router"
-	import { http, commonPasswordsApi } from "../common/http-common"
-	import { isEmailValid } from "../common/utils"
+	import HttpHelper, { commonPasswordsApi } from "../common/http-common"
+	import { isEmailValid, getClientData } from "../common/utils"
 	
 	export default {
 		name: "Signup",
@@ -100,20 +100,36 @@
 		},
 		methods: {
 			signup: function(event) {
+				let helper = new HttpHelper();
+
 				if (
 					this.name.isValid &&
 					this.email.isValid &&
 					this.password.isValid &&
 					this.confirmPassword.isValid
 				) {
-					http.post('signup', {
+					helper.http.post('signup', {
 							name: this.name.value,
 							email: this.email.value,
 							password: this.password.value
 						})
 						.then(response => {
 							// Store JWT Auth token in the local storage
-							localStorage.setItem('token', response.data.token)
+                            localStorage.setItem('token', response.data.token)
+                            
+                            // Refresh the JWT token so that the HttpHelper can access protected API routes
+                            helper.refreshToken()
+
+							// Get user's client data (ip address, etc.) and log to
+							getClientData().then(data => {
+								helper.httpAuth.post('log-signin', {
+										ip: data.ip,
+										hostname: '2001:630:a4:e3:80b7:91d9:713a:c0f5', // Dummy hostname data, as system is only a prototype
+										datetime: new Date() 
+									})
+									.then(response => {})
+									.catch(e => {});
+							})
 
 							// Redirect user to the security questions
 							router.push('signup/security-questions')

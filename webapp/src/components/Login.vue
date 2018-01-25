@@ -33,15 +33,23 @@
 </template>
 
 <script>
-import router from "../router";
-import { http, httpAuth } from "../common/http-common";
+import router from "../router"
+import HttpHelper from "../common/http-common"
 import { getClientData } from "../common/utils"
 
 export default {
   name: "Login",
+  data: () => {
+      return {
+          httpHelper: null
+      }
+  },
   created: function() {
     // Check if the user is signed in, if so, redirect to the dashboard
     if (localStorage.getItem('token') != null) router.push("dashboard")
+
+    // Initialise the HttpHelper
+    this.httpHelper = new HttpHelper()
   },
   methods: {
     login: function(event) {
@@ -49,33 +57,35 @@ export default {
       let password = event.target.elements.password.value;
 
       if (this.isEmailValid(email) && password) {
-        http
-          .post("login", {
+        this.httpHelper.http.post('login', {
             email: email,
             password: password
           })
           .then(response => {
             // Store JWT Auth token in the local storage
-            localStorage.setItem("token", response.data.token);
+            localStorage.setItem('token', response.data.token);
 
+            // Refresh the JWT token so that the HttpHelper can access protected API routes
+            this.httpHelper.refreshToken()
+
+            // Get user's client data (ip address, etc.) and log to the API
             getClientData().then(data => {
-              // Log the login event to the API
-              httpAuth
-                .post("log-signin", {
+              this.httpHelper.httpAuth.post("log-signin", {
                   ip: data.ip,
                   hostname: "2001:630:a4:e3:80b7:91d9:713a:c0f5",
                   datetime: new Date()
                 })
                 .then(response => {})
-                .catch(e => {});
+                .catch(e => {
+                    alert("BLEH");
+                });
             })
-            
 
             // Redirect user to the dashboard
             router.push("dashboard");
           })
           .catch(e => {
-            alert("Login unsucessful; your email or password is incorrect");
+              console.log(e)
           });
       }
     },

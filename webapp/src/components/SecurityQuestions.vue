@@ -76,13 +76,14 @@
 
 <script>
 	import router from "../router"
-	import { httpAuth } from "../common/http-common"
+	import HttpHelper from "../common/http-common"
 	import { isEmailValid, getForenameFromName } from "../common/utils"
 	
 	export default {
 		name: "Signup",
 		data: () => {
 			return {
+				httpHelper: null,
 				user: {
 					forename: ""
 				},
@@ -114,7 +115,9 @@
 			}
 		},
 		created: function () {
-			httpAuth.get('profile')
+			this.httpHelper = new HttpHelper();
+
+			this.httpHelper.httpAuth.get('profile')
 				.then(response => {
 					this.user.forename = getForenameFromName(response.data.name)
 					this.user.email = response.data.email
@@ -132,7 +135,7 @@
 					this.answer2.isValid &&
 					this.answer2.question.isValid
 				) {
-					httpAuth.post('profile', {
+					this.httpHelper.httpAuth.post('profile', {
 							alternativeEmail: this.email.value,
 							securityQuestionOne: this.answer1.question.value,
 							securityQuestionOneAnswer: this.answer1.value,

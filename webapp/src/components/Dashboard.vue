@@ -15,7 +15,7 @@
 
         <section>
             <h1>
-                Hi {{ this.user.forename }}, welcome back.
+                Hi {{ this.user.forename }}.
             </h1>
 
             <h2>
@@ -40,31 +40,34 @@
 
 <script>
 import router from "../router"
-import { httpAuth } from "../common/http-common"
+import HttpHelper from "../common/http-common"
 import { getForenameFromName } from "../common/utils"
 
 export default {
-  name: "Dashboard",
-  data: () => {
-      return {
-          user: {
-              forename: ""
-          }
-      }
-  },
-  created: function() {
-    httpAuth.get('profile')
-        .then(response => {
-            this.user.forename = getForenameFromName(response.data.name)
-            this.user.logins = response.data.Logins
-        })
-        .catch(e => {
-            //
-        })
-  },
-  methods: {
-      //
-  }
+    name: "Dashboard",
+    data: () => {
+        return {
+            httpHelper: null,
+            user: {
+                forename: ""
+            }
+        }
+    },
+    created: function() {
+        this.httpHelper = new HttpHelper();
+
+        this.httpHelper.httpAuth.get('profile')
+            .then(response => {
+                this.user.forename = getForenameFromName(response.data.name)
+                this.user.logins = response.data.Logins
+            })
+            .catch(e => {
+                //
+            })
+    },
+    methods: {
+        //
+    }
 };
 </script>
 

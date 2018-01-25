@@ -1,15 +1,37 @@
 import axios from 'axios'
 
-export const http = axios.create({
-  baseURL: `http://localhost:8000/api/`
-})
+export default class HttpHelper {
+  constructor () {
+    this.token = localStorage.getItem('token')
+    this.baseUrl = 'http://localhost:8000/api/'
 
-export const httpAuth = axios.create({
-  baseURL: `http://localhost:8000/api/`,
-  headers: {
-    Authorization: 'Bearer ' + localStorage.getItem('token')
+    this.http = axios.create({
+      baseURL: this.baseUrl
+    })
+
+    this.httpAuth = axios.create({
+      baseURL: this.baseUrl,
+      headers: {
+        Authorization: 'Bearer ' + this.token
+      }
+    })
   }
-})
+
+  refreshToken () {
+    this.token = localStorage.getItem('token')
+
+    this.http = axios.create({
+      baseURL: this.baseUrl
+    })
+
+    this.httpAuth = axios.create({
+      baseURL: this.baseUrl,
+      headers: {
+        Authorization: 'Bearer ' + this.token
+      }
+    })
+  }
+}
 
 export const commonPasswordsApi = axios.create({
   baseURL: 'https://moocher-io-common-passwords-v1.p.mashape.com/',
