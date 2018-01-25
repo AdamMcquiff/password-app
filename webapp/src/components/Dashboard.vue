@@ -39,17 +39,17 @@
 </template>
 
 <script>
-import router from "../router"
-import HttpHelper from "../common/http-common"
-import { getForenameFromName } from "../common/utils"
+import router from '../router'
+import HttpHelper from '../common/http-common'
+import { getForenameFromName } from '../common/utils'
 
 export default {
-    name: "Dashboard",
+    name: 'Dashboard',
     data: () => {
         return {
             httpHelper: null,
             user: {
-                forename: ""
+                forename: ''
             }
         }
     },
@@ -61,9 +61,7 @@ export default {
                 this.user.forename = getForenameFromName(response.data.name)
                 this.user.logins = response.data.Logins
             })
-            .catch(e => {
-                //
-            })
+            .catch(e => {})
     },
     methods: {
         //

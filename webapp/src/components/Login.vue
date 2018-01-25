@@ -64,7 +64,7 @@ export default {
   },
   created: function() {
     // Check if the user is signed in, if so, redirect to the dashboard
-    if (localStorage.getItem('token') != null) router.push("dashboard")
+    if (localStorage.getItem('token') != null) router.push('dashboard')
 
     // Initialise the HttpHelper
     this.httpHelper = new HttpHelper()
@@ -91,34 +91,30 @@ export default {
 
             // Get user's client data (ip address, etc.) and log to the API
             getClientData().then(data => {
-              this.httpHelper.httpAuth.post("log-signin", {
+              this.httpHelper.httpAuth.post('log-signin', {
                   ip: data.ip,
-                  hostname: "2001:630:a4:e3:80b7:91d9:713a:c0f5",
+                  hostname: '2001:630:a4:e3:80b7:91d9:713a:c0f5',
                   datetime: new Date()
                 })
                 .then(response => {})
-                .catch(e => {
-                    alert("BLEH");
-                });
+                .catch(e => {});
             })
 
             // Redirect user to the dashboard
-            router.push("dashboard");
+            router.push('dashboard');
           })
-          .catch(e => {
-              console.log(e)
-          });
+          .catch(e => {});
       }
     },
     validateEmail: function(e) {
       // Check if the email field is not empty and is in a valid 
       // 'email' format via Regular Expression (regex)
       this.email.isValid = isEmailValid(this.email.value);
-      this.email.hint = this.email.isValid ? "" : "Please enter a valid email address.";
+      this.email.hint = this.email.isValid ? '' : 'Please enter a valid email address.';
     },
     validatePassword: function(e) {
-      this.password.isValid = this.password.value != "";
-      this.password.hint = this.password.isValid ? "" : "Please enter a password.";
+      this.password.isValid = this.password.value != '';
+      this.password.hint = this.password.isValid ? '' : 'Please enter a password.';
     }
   }
 };

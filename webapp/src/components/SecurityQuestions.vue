@@ -29,7 +29,7 @@
 				
 				<select v-model="answer1.question.value" name="question1" class="form-input form-input--block" 
 					    v-on:change="validateQuestion" v-bind:class="{ invalid: answer1.question.isValid == false, valid: answer1.question.isValid }">
-					<option disabled value="">Please select one</option>
+					<option disabled value=''>Please select one</option>
 					<option value="0">What was the name of your elementary / primary school?</option>
 					<option value="1">In what city or town does your nearest sibling live?</option>
 					<option value="2">What time of the day were you born?</option>
@@ -53,7 +53,7 @@
 				
 				<select v-model="answer2.question.value" name="question2" class="form-input form-input--block"
 					    v-on:change="validateQuestion" v-bind:class="{ invalid: answer2.question.isValid == false, valid: answer2.question.isValid }">
-					<option disabled value="">Please select one</option>
+					<option disabled value=''>Please select one</option>
 					<option value="0">What was the name of your elementary / primary school?</option>
 					<option value="1">In what city or town does your nearest sibling live?</option>
 					<option value="2">What time of the day were you born?</option>
@@ -75,56 +75,62 @@
 </template>
 
 <script>
-	import router from "../router"
-	import HttpHelper from "../common/http-common"
-	import { isEmailValid, getForenameFromName } from "../common/utils"
+	import router from '../router'
+	import HttpHelper from '../common/http-common'
+	import { isEmailValid, getForenameFromName } from '../common/utils'
 	
 	export default {
-		name: "Signup",
+		name: 'Signup',
 		data: () => {
 			return {
 				httpHelper: null,
 				user: {
-					forename: ""
+					forename: ''
 				},
 				email: {
-					value: "",
+					value: '',
 					isValid: null,
-					hint: ""
+					hint: ''
 				},
 				answer1: {
 					question: {
-						value: "",
-						hint: "",
+						value: '',
+						hint: '',
 						isValid: null
 					},
-					value: "",
+					value: '',
 					isValid: null,
-					hint: ""
+					hint: ''
 				},
 				answer2: {
 					question: {
-						value: "",
-						hint: "",
+						value: '',
+						hint: '',
 						isValid: null
 					},
-					value: "",
+					value: '',
 					isValid: null,
-					hint: ""
+					hint: ''
 				},
 			}
 		},
 		created: function () {
+			// Check if the user is signed in, if not, redirect to login
+			if (localStorage.getItem('token') == null) router.push('login')
+
 			this.httpHelper = new HttpHelper();
 
+			// Get the users profile and store data locally
 			this.httpHelper.httpAuth.get('profile')
 				.then(response => {
 					this.user.forename = getForenameFromName(response.data.name)
 					this.user.email = response.data.email
+					this.user.alternativeEmail = response.data.alternativeEmail
 				})
-				.catch(e => {
-					//
-				})
+				.catch(e => {})
+
+			// Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
+			if (this.user.alternativeEmail != null) router.push('dashboard')
   		},
 		methods: {
 			signup: function (e) {
@@ -135,6 +141,7 @@
 					this.answer2.isValid &&
 					this.answer2.question.isValid
 				) {
+					// Update the user's profile with the security data
 					this.httpHelper.httpAuth.post('profile', {
 							alternativeEmail: this.email.value,
 							securityQuestionOne: this.answer1.question.value,
@@ -143,7 +150,7 @@
 							securityQuestionTwoAnswer: this.answer2.value,
 						})
 						.then(response => {
-							router.push("/dashboard")
+							router.push('/dashboard')
 						})
 						.catch(e => {
 							console.log(e)
@@ -157,12 +164,12 @@
 				let email = e.target ? e.target.value : e
 
 				this.email.isValid = false
-				this.email.hint = ""
+				this.email.hint = ''
 				
 				if (!isEmailValid(email))
-					this.email.hint = "Please enter a valid email address."
+					this.email.hint = 'Please enter a valid email address.'
 				else if (email == this.user.email)
-					this.email.hint = "Alternative email must be different from main email address."
+					this.email.hint = 'Alternative email must be different from main email address.'
 				else 
 					this.email.isValid = true
 			},
@@ -170,21 +177,21 @@
 				let question = e.target.name
 				let isValid = this.answer1.question.value != this.answer2.question.value
 				
-				this.answer1.question.hint = ""
-				this.answer2.question.hint = ""
+				this.answer1.question.hint = ''
+				this.answer2.question.hint = ''
 
 				if (!isValid) {
 					if (question == 'question1') {
-						this.answer1.question.hint = "Please select a different question to question 2."
+						this.answer1.question.hint = 'Please select a different question to question 2.'
 						this.answer1.question.isValid = false
 					} else if (question == 'question2') {
-						this.answer2.question.hint = "Please select a different question to question 1."
+						this.answer2.question.hint = 'Please select a different question to question 1.'
 						this.answer2.question.isValid = false
 					}
 				} else {
-					if (this.answer1.question.value != "")
+					if (this.answer1.question.value != '')
 						this.answer1.question.isValid = true
-					if (this.answer2.question.value != "")
+					if (this.answer2.question.value != '')
 						this.answer2.question.isValid = true
 				}
 			},
@@ -192,7 +199,7 @@
 				let answer = e.target.value
 
 				let isValid = !!answer
-				let hint = isValid ? "" : "Please enter an answer."
+				let hint = isValid ? '' : 'Please enter an answer.'
 
 				if (e.srcElement.name == 'answer-1') {
 					this.answer1.isValid = isValid
