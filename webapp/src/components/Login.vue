@@ -64,7 +64,7 @@ export default {
   },
   created: function() {
     // Check if the user is signed in, if so, redirect to the dashboard
-    if (localStorage.getItem('token') != null) router.push('dashboard')
+    if (localStorage.getItem('token') != null) router.push('/')
 
     // Initialise the HttpHelper
     this.httpHelper = new HttpHelper()
@@ -101,7 +101,7 @@ export default {
             })
 
             // Redirect user to the dashboard
-            router.push('dashboard');
+            router.push('/');
           })
           .catch(e => {});
       }

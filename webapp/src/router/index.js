@@ -13,8 +13,8 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-    path: '/',
-    name: 'Login', 
+    path: '/login',
+    name: 'Login',
     component: Login
   }, {
     path: '/signup',
@@ -25,7 +25,7 @@ export default new Router({
     name: 'SignupSecurityQuestions',
     component: SecurityQuestions
   }, {
-    path: '/dashboard',
+    path: '/',
     name: 'Dashboard',
     component: Dashboard,
     redirect: { name: 'Home' },

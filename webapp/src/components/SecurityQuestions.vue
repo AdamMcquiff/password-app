@@ -116,7 +116,7 @@
 		},
 		beforeCreate: function () {
 			// Check if the user is signed in, if not, redirect to login
-			if (localStorage.getItem('token') == null) router.push('/')
+			if (localStorage.getItem('token') == null) router.push('/login')
 
 			this.httpHelper = new HttpHelper();
 
@@ -130,7 +130,7 @@
 				.catch(e => {})
 
 			// Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
-			if (this.user.alternativeEmail != null) router.push('/dashboard')
+			if (this.user.alternativeEmail != null) router.push('/')
 		},
 		methods: {
 			signup: function (e) {

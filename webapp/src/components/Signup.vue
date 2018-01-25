@@ -100,7 +100,7 @@
 		},
 		created: function () {
 			// Check if the user is signed in, if so, redirect to the dashboard
-			if (localStorage.getItem('token') != null) router.push('/dashboard')
+			if (localStorage.getItem('token') != null) router.push('/')
 		},
 		methods: {
 			signup: function(event) {
