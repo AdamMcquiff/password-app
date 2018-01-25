@@ -1,4 +1,5 @@
 const bCrypt = require('bcrypt-nodejs')
+      loginController  = require('../controllers').login
 
 module.exports = (passport, user) => {
     const User = user

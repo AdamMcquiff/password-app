@@ -1,8 +1,7 @@
-const Users = require('../models').User
+const Users = require('../models').Users
 
 module.exports = {
     signup(req, res) {
-        console.log(req)
         return Users
             .create({
                 email: req.body.email,

@@ -1,4 +1,5 @@
 const userController   = require('../controllers').user
+      loginController  = require('../controllers').login
       passport         = require('passport')
       generateToken    = require('../authentication/token')
       expressJwt       = require('express-jwt')
@@ -31,11 +32,13 @@ module.exports = (app) => {
         })
     })
 
-    app.group("/api", (router) => {
+    app.group('/api', (router) => {
         router.use(authenticate)
 
         // User Profile
         router.get('/profile', userController.retrieve)
         router.post('/profile', userController.update)
+
+        router.post('/log-signin', loginController.create)
     })    
 }

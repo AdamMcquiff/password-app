@@ -1,9 +1,10 @@
-const User = require('../models').User
+const Users = require('../models').Users
+const Logins = require('../models').Logins
 
 module.exports = {
     retrieve(req, res) {
-        return User
-            .findById(req.user.id)
+        return Users
+            .find({ where: { id: req.user.id }, include: [ Logins ] })
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -16,7 +17,7 @@ module.exports = {
     },
 
     update(req, res) {
-        return User
+        return Users
             .update({
                 name: req.body.name,
                 alternativeEmail: req.body.alternativeEmail,

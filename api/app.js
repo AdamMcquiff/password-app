@@ -33,7 +33,7 @@ app.use(function(req, res, next) {
 });
 
 require('./server/routes')(app)
-const user = require('./server/models').User
+const user = require('./server/models').Users
 
 require('./server/authentication/passport.js')(passport, user)
 
