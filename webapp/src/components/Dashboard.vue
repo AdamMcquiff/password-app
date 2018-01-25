@@ -32,6 +32,7 @@
 <script>
 import router from '../router'
 import HttpHelper from '../common/http-common'
+import { isJWTTokenValid } from '../common/auth'
 import { getForenameFromName } from '../common/utils'
 
 export default {
@@ -46,7 +47,7 @@ export default {
     },
     beforeCreate: function () {
         // Check if the user is signed in, if not, redirect to login
-        if (localStorage.getItem('token') == null) router.push('/login')
+        if (!isJWTTokenValid()) router.push('/login')
 
         this.httpHelper = new HttpHelper();
 

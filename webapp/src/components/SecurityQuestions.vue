@@ -75,142 +75,143 @@
 </template>
 
 <script>
-	import router from '../router'
-	import HttpHelper from '../common/http-common'
-	import { isEmailValid, getForenameFromName } from '../common/utils'
-	
-	export default {
-		name: 'Signup',
-		data: () => {
-			return {
-				httpHelper: null,
-				user: {
-					forename: ''
-				},
-				email: {
+import router from '../router'
+import HttpHelper from '../common/http-common'
+import { isJWTTokenValid } from '../common/auth'
+import { isEmailValid, getForenameFromName } from '../common/utils'
+
+export default {
+	name: 'Signup',
+	data: () => {
+		return {
+			httpHelper: null,
+			user: {
+				forename: ''
+			},
+			email: {
+				value: '',
+				isValid: null,
+				hint: ''
+			},
+			answer1: {
+				question: {
 					value: '',
-					isValid: null,
-					hint: ''
+					hint: '',
+					isValid: null
 				},
-				answer1: {
-					question: {
-						value: '',
-						hint: '',
-						isValid: null
-					},
+				value: '',
+				isValid: null,
+				hint: ''
+			},
+			answer2: {
+				question: {
 					value: '',
-					isValid: null,
-					hint: ''
+					hint: '',
+					isValid: null
 				},
-				answer2: {
-					question: {
-						value: '',
-						hint: '',
-						isValid: null
-					},
-					value: '',
-					isValid: null,
-					hint: ''
-				},
+				value: '',
+				isValid: null,
+				hint: ''
+			},
+		}
+	},
+	beforeCreate: function () {
+		// Check if the user is signed in, if not, redirect to login
+		if (!isJWTTokenValid()) router.push('/login')
+
+		this.httpHelper = new HttpHelper();
+
+		// Get the users profile and store data locally
+		this.httpHelper.httpAuth.get('profile')
+			.then(response => {
+				this.user.forename = getForenameFromName(response.data.name)
+				this.user.email = response.data.email
+				this.user.alternativeEmail = response.data.alternativeEmail
+			})
+			.catch(e => {})
+
+		// Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
+		if (this.user.alternativeEmail != null) router.push('/')
+	},
+	methods: {
+		signup: function (e) {
+			if (
+				this.email.isValid &&
+				this.answer1.isValid &&
+				this.answer1.question.isValid &&
+				this.answer2.isValid &&
+				this.answer2.question.isValid
+			) {
+				// Update the user's profile with the security data
+				this.httpHelper.httpAuth.post('profile', {
+						alternativeEmail: this.email.value,
+						securityQuestionOne: this.answer1.question.value,
+						securityQuestionOneAnswer: this.answer1.value,
+						securityQuestionTwo: this.answer2.question.value,
+						securityQuestionTwoAnswer: this.answer2.value,
+					})
+					.then(response => {
+						router.push('/dashboard')
+					})
+					.catch(e => {
+						console.log(e)
+					})
+			} else {
+				this.validateEmail(this.email.value)
+				// TODO: validate q and
 			}
 		},
-		beforeCreate: function () {
-			// Check if the user is signed in, if not, redirect to login
-			if (localStorage.getItem('token') == null) router.push('/login')
+		validateEmail: function (e) {
+			let email = e.target ? e.target.value : e
 
-			this.httpHelper = new HttpHelper();
-
-			// Get the users profile and store data locally
-			this.httpHelper.httpAuth.get('profile')
-				.then(response => {
-					this.user.forename = getForenameFromName(response.data.name)
-					this.user.email = response.data.email
-					this.user.alternativeEmail = response.data.alternativeEmail
-				})
-				.catch(e => {})
-
-			// Check if the user has added security data; if so, this page is redundant so redirect to the dashboard
-			if (this.user.alternativeEmail != null) router.push('/')
+			this.email.isValid = false
+			this.email.hint = ''
+			
+			if (!isEmailValid(email))
+				this.email.hint = 'Please enter a valid email address.'
+			else if (email == this.user.email)
+				this.email.hint = 'Alternative email must be different from main email address.'
+			else 
+				this.email.isValid = true
 		},
-		methods: {
-			signup: function (e) {
-				if (
-					this.email.isValid &&
-					this.answer1.isValid &&
-					this.answer1.question.isValid &&
-					this.answer2.isValid &&
-					this.answer2.question.isValid
-				) {
-					// Update the user's profile with the security data
-					this.httpHelper.httpAuth.post('profile', {
-							alternativeEmail: this.email.value,
-							securityQuestionOne: this.answer1.question.value,
-							securityQuestionOneAnswer: this.answer1.value,
-							securityQuestionTwo: this.answer2.question.value,
-							securityQuestionTwoAnswer: this.answer2.value,
-						})
-						.then(response => {
-							router.push('/dashboard')
-						})
-						.catch(e => {
-							console.log(e)
-						})
-				} else {
-					this.validateEmail(this.email.value)
-					// TODO: validate q and
+		validateQuestion: function (e) {
+			let question = e.target.name
+			let isValid = this.answer1.question.value != this.answer2.question.value
+			
+			this.answer1.question.hint = ''
+			this.answer2.question.hint = ''
+
+			if (!isValid) {
+				if (question == 'question1') {
+					this.answer1.question.hint = 'Please select a different question to question 2.'
+					this.answer1.question.isValid = false
+				} else if (question == 'question2') {
+					this.answer2.question.hint = 'Please select a different question to question 1.'
+					this.answer2.question.isValid = false
 				}
-			},
-			validateEmail: function (e) {
-				let email = e.target ? e.target.value : e
+			} else {
+				if (this.answer1.question.value != '')
+					this.answer1.question.isValid = true
+				if (this.answer2.question.value != '')
+					this.answer2.question.isValid = true
+			}
+		},
+		validateAnswer: function (e) {
+			let answer = e.target.value
 
-				this.email.isValid = false
-				this.email.hint = ''
-				
-				if (!isEmailValid(email))
-					this.email.hint = 'Please enter a valid email address.'
-				else if (email == this.user.email)
-					this.email.hint = 'Alternative email must be different from main email address.'
-				else 
-					this.email.isValid = true
-			},
-			validateQuestion: function (e) {
-				let question = e.target.name
-				let isValid = this.answer1.question.value != this.answer2.question.value
-				
-				this.answer1.question.hint = ''
-				this.answer2.question.hint = ''
+			let isValid = !!answer
+			let hint = isValid ? '' : 'Please enter an answer.'
 
-				if (!isValid) {
-					if (question == 'question1') {
-						this.answer1.question.hint = 'Please select a different question to question 2.'
-						this.answer1.question.isValid = false
-					} else if (question == 'question2') {
-						this.answer2.question.hint = 'Please select a different question to question 1.'
-						this.answer2.question.isValid = false
-					}
-				} else {
-					if (this.answer1.question.value != '')
-						this.answer1.question.isValid = true
-					if (this.answer2.question.value != '')
-						this.answer2.question.isValid = true
-				}
-			},
-			validateAnswer: function (e) {
-				let answer = e.target.value
-
-				let isValid = !!answer
-				let hint = isValid ? '' : 'Please enter an answer.'
-
-				if (e.srcElement.name == 'answer-1') {
-					this.answer1.isValid = isValid
-					this.answer1.hint = hint
-				} else {
-					this.answer2.isValid = isValid
-					this.answer2.hint = hint
-				}
+			if (e.srcElement.name == 'answer-1') {
+				this.answer1.isValid = isValid
+				this.answer1.hint = hint
+			} else {
+				this.answer2.isValid = isValid
+				this.answer2.hint = hint
 			}
 		}
 	}
+}
 </script>
 
 <style scoped>

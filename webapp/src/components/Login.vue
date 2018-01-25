@@ -43,6 +43,7 @@
 <script>
 import router from '../router'
 import HttpHelper from '../common/http-common'
+import { isJWTTokenValid } from '../common/auth'
 import { isEmailValid, getClientData } from '../common/utils'
 
 export default {
@@ -64,7 +65,7 @@ export default {
   },
   created: function() {
     // Check if the user is signed in, if so, redirect to the dashboard
-    if (localStorage.getItem('token') != null) router.push('/')
+    if (localStorage.getItem('token') != null && isJWTTokenValid()) router.push('/')
 
     // Initialise the HttpHelper
     this.httpHelper = new HttpHelper()
