@@ -17,3 +17,8 @@ To setup and run the API:
 * `cd api`
 * `npm install`
 * `npm run start:dev`
+
+## Screenshots
+
+![Applications screenshot](https://i.imgur.com/aBJAmcZ.png)
+
